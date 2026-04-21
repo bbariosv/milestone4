@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie SPA - Milestone 4</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>🎬 Movie Center</h1>
+        <nav>
+            <button id="btn-popular">Populares</button>
+            <button id="btn-search-view">Buscador</button>
+        </nav>
+    </header>
+
+    <main id="app">
+        <div id="search-bar" style="display:none;">
+            <input type="text" id="query" placeholder="Escribe una película...">
+            <button id="btn-do-search">Buscar</button>
+        </div>
+
+        <div class="controls">
+            <button id="grid-mode">Ver en Cuadrícula</button>
+            <button id="list-mode">Ver en Lista</button>
+        </div>
+
+        <div id="results-container" class="grid-view">
+            <p>Presiona "Populares" para empezar...</p>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
