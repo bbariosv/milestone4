@@ -1,0 +1,15 @@
+body { font-family: sans-serif; background: #222; color: white; text-align: center; }
+header { background: #111; padding: 20px; margin-bottom: 20px; }
+button { padding: 10px 20px; cursor: pointer; background: #e50914; color: white; border: none; border-radius: 5px; margin: 5px; }
+
+/* Contenedor de resultados */
+#results-container { display: grid; padding: 20px; gap: 20px; }
+
+/* Vista en CUADRÍCULA (Grid) */
+.grid-view { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+
+/* Vista en LISTA (List) */
+.list-view { grid-template-columns: 1fr; text-align: left; }
+
+.movie-card { background: #333; padding: 15px; border-radius: 10px; border: 1px solid #444; }
+.movie-card img { width: 100%; border-radius: 5px; }
