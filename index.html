@@ -9,31 +9,61 @@
 <body>
 
     <header>
-        <h1>🎬 Movie Center</h1>
+        <h1> Movie Center</h1>
         <nav>
-            <button id="btn-popular">Populares</button>
+            <button id="btn-popular">Ver Populares</button>
             <button id="btn-search-view">Buscador</button>
         </nav>
     </header>
 
     <main id="app">
-        <div id="search-bar" style="display:none;">
-            <input type="text" id="query" placeholder="Escribe una película...">
-            <button id="btn-do-search">Buscar</button>
+        <div id="search-bar" style="display:none; margin: 20px;">
+            <input type="text" id="query" placeholder="Escribe un tema (ej: Star Wars)..." style="padding: 10px; width: 250px;">
+            <button id="btn-do-search">Buscar Ahora</button>
         </div>
 
-        <div class="controls">
-            <button id="grid-mode">Ver en Cuadrícula</button>
-            <button id="list-mode">Ver en Lista</button>
+        <div class="controls" style="margin-bottom: 20px;">
+            <button id="grid-mode">Vista Cuadrícula</button>
+            <button id="list-mode">Vista Lista</button>
         </div>
 
         <div id="results-container" class="grid-view">
-            <p>Presiona "Populares" para empezar...</p>
+            <p>Haz clic en "Ver Populares" para cargar contenido.</p>
+        </div>
+
+        <div id="details-panel" style="display:none; background: #333; padding: 20px; border: 2px solid red; margin: 20px; border-radius: 10px;">
+            <button id="close-details" style="float: right;">Cerrar X</button>
+            <div id="details-content"></div>
         </div>
     </main>
 
+    <script id="movie-card-template" type="x-tmpl-mustache">
+        {{#movies}}
+        <div class="movie-card" data-id="{{id}}" style="cursor:pointer;">
+            <img src="{{poster_path}}" alt="{{title}}">
+            <div class="info">
+                <h3>{{title}}</h3>
+                <p>Rating: {{vote_average}}</p>
+                <small>Haz clic para ver detalles</small>
+            </div>
+        </div>
+        {{/movies}}
+    </script>
+
+    <script id="detail-template" type="x-tmpl-mustache">
+        <div class="detail-header">
+            <img src="{{poster_path}}" style="width: 150px; float: left; margin-right: 20px;">
+            <h2>{{title}}</h2>
+            <p><strong>Descripción:</strong> {{description}}</p>
+            <p><strong>ID del ítem:</strong> {{id}}</p>
+        </div>
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js"></script>
+    
     <script src="app.js"></script>
+
 </body>
 </html>
