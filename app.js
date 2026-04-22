@@ -1,15 +1,13 @@
 $(document).ready(function() {
 
     let currentPage = 1;
-    let currentQuery = "Star Wars"; // Búsqueda por defecto
+    let currentQuery = "Star Wars"; 
     let currentTarget = "#search-results";
    
-    // TU NUEVA CLAVE DE TMDB
     const API_KEY = "f691baf95d6e481fe0f098e670e9a1fb";
     const BASE_URL = "https://api.themoviedb.org/3";
     const IMG_URL = "https://image.tmdb.org/t/p/w500";
 
-    // Carga inicial (Search Engine)
     fetchMovies(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${currentQuery}&page=${currentPage}`, currentTarget);
 
     function fetchMovies(url, target) {
@@ -24,7 +22,6 @@ $(document).ready(function() {
                     return;
                 }
 
-                // Adaptación de datos de TMDB para el template
                 const formatted = data.results.map(item => ({
                     id: item.id,
                     title: item.title || item.name,
@@ -42,7 +39,7 @@ $(document).ready(function() {
         });
     }
 
-    // --- NAVEGACIÓN ---
+    
     $('#btn-search-view').click(function() {
         $('#search-section').show();
         $('#collection-section').hide();
@@ -65,7 +62,7 @@ $(document).ready(function() {
         fetchMovies(url, currentTarget);
     }
 
-    // --- BÚSQUEDA ---
+    
     $('#btn-do-search').click(function() {
         const q = $('#query').val();
         if (q) {
@@ -77,7 +74,7 @@ $(document).ready(function() {
         }
     });
 
-    // --- DETALLES (Details-on-Demand) ---
+  
     $(document).on('click', '.movie-card', function() {
         const id = $(this).data('id');
 
@@ -103,7 +100,7 @@ $(document).ready(function() {
         });
     });
 
-    // --- PAGINACIÓN ---
+    
     $('#next-page').click(function() {
         currentPage++;
         const url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${currentQuery}&page=${currentPage}`;
