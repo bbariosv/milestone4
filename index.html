@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie & Book Center - Milestone 4</title>
+    <title>Movie Center - Milestone 4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <h1>Movie & Media Center</h1>
+    <h1>Movie & TV Series Center</h1>
     <nav>
         <button id="btn-popular">Popular Collection</button>
-        <button id="btn-search-view">Search Engine</button>
+        <button id="btn-search-view">Open Search Bar</button>
     </nav>
 </header>
 
 <hr>
 
 <main id="app">
-    <div id="search-bar" style="display:none; text-align: center;">
-        <input type="text" id="query" placeholder="Search for titles..." />
-        <button id="btn-do-search">Search</button>
+    <div id="search-bar" style="display:none; text-align: center; padding: 20px;">
+        <input type="text" id="query" placeholder="Search movies or shows..." />
+        <button id="btn-do-search">Search Now</button>
     </div>
 
     <div class="controls">
@@ -32,20 +32,15 @@
     <hr>
 
     <div id="main-container" class="grid-view">
-        <p style="text-align:center;">Please select a category or search for something.</p>
+        <p style="text-align:center;">Initializing application...</p>
     </div>
 
     <hr>
 
-    <div class="pagination-container">
-        <button id="prev-page">Previous</button>
-        <span id="page-info">Page 1</span>
-        <button id="next-page">Next</button>
-    </div>
-
     <div id="details-panel" style="display:none;">
         <button id="close-details" style="float:right;">Close ✖</button>
-        <div id="details-content"></div>
+        <div id="details-content">
+            </div>
     </div>
 </main>
 
@@ -62,14 +57,15 @@
 </script>
 
 <script id="detail-template" type="x-tmpl-mustache">
-<div class="detail-flex">
-    <img src="{{poster}}">
-    <div>
-        <h2>{{title}}</h2>
-        <p>{{{description}}}</p>
+<div class="detail-flex" style="display: flex; gap: 30px; padding: 20px;">
+    <img src="{{poster}}" style="max-width: 250px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    <div class="text-content">
+        <h2 style="color: #557a95;">{{title}}</h2>
         <hr>
-        <p><strong>Rating:</strong> {{rating}} / 5</p>
+        <div class="summary-box">
+            {{{description}}} </div>
         <p><strong>Language:</strong> {{language}}</p>
+        <p><strong>Average Rating:</strong> {{rating}} / 10</p>
     </div>
 </div>
 </script>
