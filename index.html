@@ -21,13 +21,12 @@
 
 <main id="app">
 
-    <!-- CONTROLES -->
     <div class="controls" style="text-align:center; margin:20px;">
         <button id="grid-mode">Grid View</button>
         <button id="list-mode">List View</button>
     </div>
 
-    <!-- SECCIÓN BUSCADOR -->
+    <!-- SEARCH -->
     <section id="search-section">
 
         <div id="search-bar" style="text-align: center; margin: 20px;">
@@ -41,68 +40,53 @@
 
     </section>
 
-    <!-- SECCIÓN COLECCIÓN -->
+    <!-- COLLECTION -->
     <section id="collection-section" style="display:none;">
-
-        <h2 style="text-align:center; color: #557a95;">
-            Collection & Top-Rated
-        </h2>
-
+        <h2 style="text-align:center;">Collection & Top-Rated</h2>
         <div id="collection-results" class="grid-view"></div>
-
     </section>
 
     <hr>
 
-    <!-- PAGINACIÓN -->
-    <div class="pagination-container" style="text-align: center;">
+    <!-- PAGINATION -->
+    <div class="pagination-container" style="text-align:center;">
         <button id="prev-page">Previous</button>
         <span id="page-info">Page 1</span>
         <button id="next-page">Next</button>
     </div>
 
-    <!-- PANEL DETALLES -->
-    <div id="details-panel" style="display:none; background:#333; margin:20px; padding:20px; border-radius:10px;">
-        <button id="close-details" style="float:right;">Close ✖</button>
+    <!-- DETAILS -->
+    <div id="details-panel" style="display:none; background:#333; margin:20px; padding:20px;">
+        <button id="close-details">Close ✖</button>
         <div id="details-content"></div>
     </div>
 
 </main>
 
-<!-- TEMPLATE TARJETAS -->
+<!-- TEMPLATE CARDS -->
 <script id="movie-card-template" type="x-tmpl-mustache">
 {{#items}}
-<div class="movie-card" data-id="{{id}}" style="cursor:pointer;">
-    <img src="{{poster}}" alt="{{title}}">
-    <div class="info">
-        <h3>{{title}}</h3>
-        <p><strong>Rating:</strong> {{rating}}</p>
-    </div>
+<div class="movie-card" data-id="{{id}}">
+    <img src="{{poster}}">
+    <h3>{{title}}</h3>
+    <p>Rating: {{rating}}</p>
 </div>
 {{/items}}
 </script>
 
-<!-- TEMPLATE DETALLES -->
+<!-- TEMPLATE DETAILS -->
 <script id="detail-template" type="x-tmpl-mustache">
-<div class="detail-flex" style="display: flex; gap: 20px; padding: 20px;">
-    
-    <img src="{{poster}}" style="max-width: 200px;">
-
-    <div>
-        <h2>{{title}}</h2>
-        <div>{{{description}}}</div>
-        <p><strong>Language:</strong> {{language}}</p>
-        <p><strong>Rating:</strong> {{rating}} / 10</p>
-    </div>
-
+<div>
+    <img src="{{poster}}" style="width:200px;">
+    <h2>{{title}}</h2>
+    <p>{{{description}}}</p>
+    <p><strong>Language:</strong> {{language}}</p>
+    <p><strong>Rating:</strong> {{rating}}</p>
 </div>
 </script>
 
-<!-- LIBRERÍAS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js"></script>
-
-<!-- TU JS -->
 <script src="app.js"></script>
 
 </body>
