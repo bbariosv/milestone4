@@ -1,15 +1,16 @@
 $(document).ready(function() {
     let currentPage = 0;
-    let currentQuery = "cinema"; // Default search
+    let currentQuery = "movies"; 
     let itemsPerPage = 10;
 
-    // Initial load
-    fetchData(currentQuery, currentPage);
+    // Carga inicial automática
+    fetchData(currentQuery, 0);
 
     function fetchData(query, startIndex) {
+        // Usamos el contenedor principal
         $("#main-container").html("<p style='text-align:center;'>Loading data...</p>");
         
-        const url = `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}&maxResults=${itemsPerPage}`;
+        const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&startIndex=${startIndex}&maxResults=${itemsPerPage}`;
 
         $.ajax({
             url: url,
@@ -18,12 +19,13 @@ $(document).ready(function() {
                 if (data.items) {
                     renderItems(data.items);
                 } else {
-                    $("#main-container").html("<p>No results found.</p>");
+                    $("#main-container").html("<p style='text-align:center;'>No results found. Try another search.</p>");
                 }
                 updatePaginationDisplay();
             },
             error: function() {
-                alert("Error connecting to the API.");
+                // Si sale este error, es que la API de Google está saturada o la URL está mal
+                $("#main-container").html("<p style='text-align:center;'>API Error. Please try again later.</p>");
             }
         });
     }
@@ -47,16 +49,15 @@ $(document).ready(function() {
         $('#page-info').text(`Page ${pageNumber}`);
     }
 
-    // Nav Events
+    // Eventos de botones
     $('#btn-popular').click(function() {
-        currentQuery = "subject:fiction";
+        currentQuery = "subject:cinema";
         currentPage = 0;
-        $('#search-bar').hide();
-        fetchData(currentQuery, currentPage);
+        fetchData(currentQuery, 0);
     });
 
     $('#btn-search-view').click(function() {
-        $('#search-bar').fadeIn();
+        $('#search-bar').toggle();
     });
 
     $('#btn-do-search').click(function() {
@@ -64,11 +65,10 @@ $(document).ready(function() {
         if (q) {
             currentQuery = q;
             currentPage = 0;
-            fetchData(currentQuery, currentPage);
+            fetchData(currentQuery, 0);
         }
     });
 
-    // Pagination
     $('#next-page').click(function() {
         currentPage += itemsPerPage;
         fetchData(currentQuery, currentPage);
@@ -81,7 +81,7 @@ $(document).ready(function() {
         }
     });
 
-    // Layout Switch
+    // Cambios de vista
     $('#grid-mode').click(function() {
         $('#main-container').removeClass('list-view').addClass('grid-view');
     });
@@ -90,17 +90,17 @@ $(document).ready(function() {
         $('#main-container').removeClass('grid-view').addClass('list-view');
     });
 
-    // Details-on-Demand
+    // Detalles
     $(document).on('click', '.movie-card', function() {
         const id = $(this).data('id');
         $.get(`https://www.googleapis.com/books/v1/volumes/${id}`, function(data) {
             const template = $('#detail-template').html();
             const detailData = {
                 title: data.volumeInfo.title,
-                poster: data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.medium || data.volumeInfo.imageLinks.thumbnail : '',
+                poster: data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : '',
                 description: data.volumeInfo.description || "No description available.",
                 rating: data.volumeInfo.averageRating || "N/A",
-                language: data.volumeInfo.language.toUpperCase()
+                language: (data.volumeInfo.language || "EN").toUpperCase()
             };
             const rendered = Mustache.render(template, detailData);
             $('#details-content').html(rendered);
@@ -108,7 +108,5 @@ $(document).ready(function() {
         });
     });
 
-    $('#close-details').click(function() {
-        $('#details-panel').fadeOut();
-    });
+    $('#close-details').click(function() { $('#details-panel').fadeOut(); });
 });
