@@ -1,6 +1,6 @@
 body {
     font-family: "Times New Roman", Times, serif;
-    background-color: #f4f7f6; /* Fondo gris muy claro */
+    background-color: #f4f7f6;
     color: #333; 
     margin: 0;
     line-height: 1.6;
@@ -10,11 +10,11 @@ header {
     background-color: #ffffff;
     padding: 30px;
     text-align: center;
-    border-bottom: 2px solid #b2d8d8; /* Línea divisoria pastel */
+    border-bottom: 2px solid #b2d8d8;
 }
 
 h1 {
-    color: #557a95; /* Azul grisáceo pastel */
+    color: #557a95; 
     margin-bottom: 20px;
 }
 
@@ -30,9 +30,9 @@ hr {
     padding: 15px;
 }
 
-/* BUTTONS PASTEL STYLE */
+
 button {
-    background-color: #b2d8d8; /* Verde/Azul pastel */
+    background-color: #b2d8d8; 
     color: #333;
     border: 1px solid #99c2c2;
     padding: 8px 18px;
@@ -55,7 +55,7 @@ input[type="text"] {
     font-family: "Times New Roman", serif;
 }
 
-/* GRID & LIST */
+
 .grid-view {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -88,7 +88,7 @@ input[type="text"] {
     border-radius: 3px;
 }
 
-/* DETAILS PANEL */
+
 #details-panel {
     position: fixed;
     top: 10%;
