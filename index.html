@@ -1,82 +1,81 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie SPA - Milestone 4</title>
+    <title>Movie & Book Center - Milestone 4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <h1>Movie Center</h1>
+    <h1>Movie & Media Center</h1>
     <nav>
-        <button id="btn-popular">Populares</button>
-        <button id="btn-search-view">Buscador</button>
+        <button id="btn-popular">Popular Collection</button>
+        <button id="btn-search-view">Search Engine</button>
     </nav>
 </header>
 
+<hr>
+
 <main id="app">
-
-    <!-- BUSCADOR -->
-    <div id="search-bar" style="display:none; margin: 20px;">
-        <input type="text" id="query" placeholder="Busca libros..." />
-        <button id="btn-do-search">Buscar</button>
+    <div id="search-bar" style="display:none; text-align: center;">
+        <input type="text" id="query" placeholder="Search for titles..." />
+        <button id="btn-do-search">Search</button>
     </div>
 
-    <!-- CONTROLES -->
     <div class="controls">
-        <button id="grid-mode">Grid</button>
-        <button id="list-mode">Lista</button>
+        <button id="grid-mode">Grid View</button>
+        <button id="list-mode">List View</button>
     </div>
 
-    <!-- RESULTADOS -->
-    <div id="search-results" class="grid-view"></div>
-    <div id="collection-results" class="grid-view" style="display:none;"></div>
+    <hr>
 
-    <!-- PAGINACIÓN -->
+    <div id="main-container" class="grid-view">
+        <p style="text-align:center;">Please select a category or search for something.</p>
+    </div>
+
+    <hr>
+
     <div class="pagination-container">
-        <button id="prev-page">Anterior</button>
-        <span id="page-info">Página 1</span>
-        <button id="next-page">Siguiente</button>
+        <button id="prev-page">Previous</button>
+        <span id="page-info">Page 1</span>
+        <button id="next-page">Next</button>
     </div>
 
-    <!-- DETALLES -->
     <div id="details-panel" style="display:none;">
-        <button id="close-details">Cerrar ✖</button>
+        <button id="close-details" style="float:right;">Close ✖</button>
         <div id="details-content"></div>
     </div>
-
 </main>
 
-<!-- TEMPLATE CARDS -->
 <script id="movie-card-template" type="x-tmpl-mustache">
-{{#movies}}
+{{#items}}
 <div class="movie-card" data-id="{{id}}">
-    <img src="{{poster_path}}" alt="{{title}}">
+    <img src="{{poster}}" alt="{{title}}">
     <div class="info">
         <h3>{{title}}</h3>
-        <p>Rating: {{vote_average}}</p>
+        <p><strong>Rating:</strong> {{rating}}</p>
     </div>
 </div>
-{{/movies}}
+{{/items}}
 </script>
 
-<!-- TEMPLATE DETALLE -->
 <script id="detail-template" type="x-tmpl-mustache">
-<div class="detail">
-    <img src="{{poster_path}}">
-    <h2>{{title}}</h2>
-    <p>{{description}}</p>
-    <p><strong>Rating:</strong> {{rating}}</p>
-    <p><strong>Idioma:</strong> {{language}}</p>
+<div class="detail-flex">
+    <img src="{{poster}}">
+    <div>
+        <h2>{{title}}</h2>
+        <p>{{{description}}}</p>
+        <hr>
+        <p><strong>Rating:</strong> {{rating}} / 5</p>
+        <p><strong>Language:</strong> {{language}}</p>
+    </div>
 </div>
 </script>
 
-<!-- LIBRERÍAS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js"></script>
-
 <script src="app.js"></script>
 
 </body>
