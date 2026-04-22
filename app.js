@@ -3,19 +3,14 @@ $(document).ready(function() {
     let currentPage = 1;
     let currentQuery = "star wars";
     let currentTarget = "#search-results";
-    const API_KEY = "3671d14c"; 
+    const API_KEY = "TU_API_KEY"; // ⚠️ PON TU KEY
 
-    // ============================
-    // 1. CARGA INICIAL
-    // ============================
+    // INICIO
     fetchMovies(currentQuery, currentTarget);
 
-    // ============================
-    // 2. FETCH MOVIES (AJAX)
-    // ============================
     function fetchMovies(query, target) {
 
-        $(target).html("<p style='text-align:center;'>Loading...</p>");
+        $(target).html("<p>Loading...</p>");
 
         $.ajax({
             url: `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}&page=${currentPage}`,
@@ -23,9 +18,8 @@ $(document).ready(function() {
 
             success: function(data) {
 
-                // Si no hay resultados
                 if (!data.Search) {
-                    $(target).html("<p>No results found</p>");
+                    $(target).html("<p>No results</p>");
                     return;
                 }
 
@@ -34,49 +28,48 @@ $(document).ready(function() {
                     title: item.Title,
                     poster: item.Poster !== "N/A"
                         ? item.Poster
-                        : 'https://via.placeholder.com/210x295?text=No+Image',
+                        : 'https://via.placeholder.com/200',
                     rating: "N/A"
                 }));
 
                 const template = $('#movie-card-template').html();
-                const rendered = Mustache.render(template, { movies: formatted });
+                const rendered = Mustache.render(template, { items: formatted });
 
                 $(target).html(rendered);
-            },
-
-            error: function() {
-                $(target).html("<p>Error loading data</p>");
             }
         });
     }
 
-    // ============================
-    // 3. NAVEGACIÓN
-    // ============================
-
+    // NAV
     $('#btn-search-view').click(function() {
-        $('#collection-results').hide();
-        $('#search-results').show();
-        $('#search-bar').show();
+        $('#search-section').show();
+        $('#collection-section').hide();
         currentTarget = "#search-results";
     });
 
     $('#btn-popular').click(function() {
-        $('#search-results').hide();
-        $('#collection-results').show();
-        $('#search-bar').hide();
+        $('#search-section').hide();
+        $('#collection-section').show();
 
-        currentTarget = "#collection-results";
-        currentQuery = "avengers"; // simulamos "popular"
+        currentQuery = "avengers";
         currentPage = 1;
+        currentTarget = "#collection-results";
 
         fetchMovies(currentQuery, currentTarget);
     });
 
-    // ============================
-    // 4. BUSCADOR
-    // ============================
+    $('#btn-bookshelf').click(function() {
+        $('#search-section').hide();
+        $('#collection-section').show();
 
+        currentQuery = "harry potter";
+        currentPage = 1;
+        currentTarget = "#collection-results";
+
+        fetchMovies(currentQuery, currentTarget);
+    });
+
+    // SEARCH
     $('#btn-do-search').click(function() {
         const q = $('#query').val();
 
@@ -84,17 +77,14 @@ $(document).ready(function() {
             currentQuery = q;
             currentPage = 1;
 
-            $('#search-results').show();
-            $('#collection-results').hide();
+            $('#search-section').show();
+            $('#collection-section').hide();
 
             fetchMovies(currentQuery, "#search-results");
         }
     });
 
-    // ============================
-    // 5. GRID / LIST
-    // ============================
-
+    // GRID / LIST
     $('#grid-mode').click(function() {
         $(currentTarget).removeClass('list-view').addClass('grid-view');
     });
@@ -103,10 +93,7 @@ $(document).ready(function() {
         $(currentTarget).removeClass('grid-view').addClass('list-view');
     });
 
-    // ============================
-    // 6. DETALLES (OMDb)
-    // ============================
-
+    // DETAILS
     $(document).on('click', '.movie-card', function() {
 
         const id = $(this).data('id');
@@ -121,7 +108,7 @@ $(document).ready(function() {
 
                 const detailData = {
                     title: movie.Title,
-                    poster: movie.Poster !== "N/A" ? movie.Poster : '',
+                    poster: movie.Poster,
                     description: movie.Plot,
                     rating: movie.imdbRating,
                     language: movie.Language
@@ -130,19 +117,16 @@ $(document).ready(function() {
                 const rendered = Mustache.render(template, detailData);
 
                 $('#details-content').html(rendered);
-                $('#details-panel').fadeIn();
+                $('#details-panel').show();
             }
         });
     });
 
     $('#close-details').click(function() {
-        $('#details-panel').fadeOut();
+        $('#details-panel').hide();
     });
 
-    // ============================
-    // 7. PAGINACIÓN
-    // ============================
-
+    // PAGINATION
     $('#next-page').click(function() {
         currentPage++;
         $('#page-info').text(`Page ${currentPage}`);
