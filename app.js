@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     // --- CONFIGURACIÓN ---
     const API_KEY = "f691baf95d6e481fe0f098e670e9a1fb"; 
-    const BASE_URL = "https://api.themoviedb.org/3";
+    const BASE_URL = "https://www.themoviedb.org/settings/api";
     const IMG_URL = "https://image.tmdb.org/t/p/w500";
 
     let currentPage = 1;
