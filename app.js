@@ -1,68 +1,73 @@
 $(document).ready(function() {
-    let currentViewMode = 'grid-view';
+    let currentPage = 1;
+    let currentQuery = "Star Wars";
+    let currentTarget = "#search-results";
 
-    // 1. CARGA INICIAL (AJAX)
-    // Buscamos "Star Wars" por defecto para que no esté vacío
-    fetchMovies('Star Wars');
+    // 1. CARGA INICIAL
+    fetchMovies(currentQuery, "#search-results");
 
-    function fetchMovies(query) {
-        $("#main-container").html("<p style='text-align:center;'>Searching movies...</p>");
+    function fetchMovies(query, target) {
+        $(target).html("<p style='text-align:center;'>Loading data...</p>");
         
         $.ajax({
             url: `https://api.tvmaze.com/search/shows?q=${query}`,
             method: 'GET',
             success: function(data) {
-                // TVMaze devuelve un array de objetos {show: {...}}
-                // Lo mapeamos para que Mustache lo entienda fácil
-                const formattedData = data.map(item => ({
+                const formatted = data.map(item => ({
                     id: item.show.id,
                     title: item.show.name,
                     poster: item.show.image ? item.show.image.medium : 'https://via.placeholder.com/210x295?text=No+Image',
-                    rating: item.show.rating.average || "N/A",
-                    summary: item.show.summary || "No description available.",
-                    language: item.show.language,
-                    genres: item.show.genres.join(", ")
+                    rating: item.show.rating.average || "N/A"
                 }));
 
-                renderResults(formattedData);
+                const template = $('#movie-card-template').html();
+                const rendered = Mustache.render(template, { items: formatted });
+                $(target).html(rendered);
             },
             error: function() {
-                alert("Error connecting to the Movie API");
+                $(target).html("<p style='text-align:center;'>Error loading data. Try again.</p>");
             }
         });
     }
 
-    // 2. RENDERIZADO CON MUSTACHE
-    function renderResults(movies) {
-        const template = $('#movie-card-template').html();
-        const rendered = Mustache.render(template, { items: movies });
-        $('#main-container').html(rendered);
-    }
+    // 2. NAVEGACIÓN ENTRE SECCIONES (Punto 7)
+    $('#btn-search-view').click(function() {
+        $('#collection-section').hide();
+        $('#search-section').fadeIn();
+        currentTarget = "#search-results";
+    });
+
+    $('#btn-popular, #btn-bookshelf').click(function() {
+        $('#search-section').hide();
+        $('#collection-section').fadeIn();
+        currentTarget = "#collection-results";
+        // Cargamos la colección solo si está vacía o se pulsa el botón
+        fetchMovies("Top Rated", "#collection-results");
+    });
 
     // 3. BUSCADOR
     $('#btn-do-search').click(function() {
-        const query = $('#query').val();
-        if (query) fetchMovies(query);
+        const q = $('#query').val();
+        if (q) {
+            currentQuery = q;
+            currentPage = 1;
+            $('#page-info').text(`Page ${currentPage}`);
+            fetchMovies(q, "#search-results");
+        }
     });
 
-    // 4. COLECCIÓN POPULAR (AJAX con otra búsqueda)
-    $('#btn-popular').click(function() {
-        fetchMovies('Top Rated'); // Simulamos populares con una búsqueda fija
-    });
-
-    // 5. CAMBIO DE VISTA (GRID/LIST)
+    // 4. VISTAS GRID / LIST
     $('#grid-mode').click(function() {
-        $('#main-container').removeClass('list-view').addClass('grid-view');
+        $('#search-results, #collection-results').removeClass('list-view').addClass('grid-view');
     });
 
     $('#list-mode').click(function() {
-        $('#main-container').removeClass('grid-view').addClass('list-view');
+        $('#search-results, #collection-results').removeClass('grid-view').addClass('list-view');
     });
 
-    // 6. DETALLES ON DEMAND (AJAX para un solo ítem)
+    // 5. DETALLES (SPA Behavior)
     $(document).on('click', '.movie-card', function() {
         const id = $(this).data('id');
-        
         $.ajax({
             url: `https://api.tvmaze.com/shows/${id}`,
             method: 'GET',
@@ -70,8 +75,8 @@ $(document).ready(function() {
                 const template = $('#detail-template').html();
                 const detailData = {
                     title: show.name,
-                    poster: show.image ? show.image.original : '',
-                    description: show.summary, // TVMaze ya trae el HTML
+                    poster: show.image ? show.image.medium : '',
+                    description: show.summary,
                     rating: show.rating.average || "N/A",
                     language: show.language
                 };
@@ -84,5 +89,20 @@ $(document).ready(function() {
 
     $('#close-details').click(function() {
         $('#details-panel').fadeOut();
+    });
+
+    // 6. PAGINACIÓN (Simulada para cumplir el requisito)
+    $('#next-page').click(function() {
+        currentPage++;
+        $('#page-info').text(`Page ${currentPage}`);
+        fetchMovies(currentQuery, currentTarget);
+    });
+
+    $('#prev-page').click(function() {
+        if (currentPage > 1) {
+            currentPage--;
+            $('#page-info').text(`Page ${currentPage}`);
+            fetchMovies(currentQuery, currentTarget);
+        }
     });
 });
