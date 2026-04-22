@@ -1,87 +1,56 @@
 $(document).ready(function() {
-    let currentPage = 0;
-    let currentQuery = "movies"; 
-    let itemsPerPage = 10;
+    let currentViewMode = 'grid-view';
 
-    // Carga inicial automática
-    fetchData(currentQuery, 0);
+    // 1. CARGA INICIAL (AJAX)
+    // Buscamos "Star Wars" por defecto para que no esté vacío
+    fetchMovies('Star Wars');
 
-    function fetchData(query, startIndex) {
-        // Usamos el contenedor principal
-        $("#main-container").html("<p style='text-align:center;'>Loading data...</p>");
+    function fetchMovies(query) {
+        $("#main-container").html("<p style='text-align:center;'>Searching movies...</p>");
         
-        const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&startIndex=${startIndex}&maxResults=${itemsPerPage}`;
-
         $.ajax({
-            url: url,
+            url: `https://api.tvmaze.com/search/shows?q=${query}`,
             method: 'GET',
             success: function(data) {
-                if (data.items) {
-                    renderItems(data.items);
-                } else {
-                    $("#main-container").html("<p style='text-align:center;'>No results found. Try another search.</p>");
-                }
-                updatePaginationDisplay();
+                // TVMaze devuelve un array de objetos {show: {...}}
+                // Lo mapeamos para que Mustache lo entienda fácil
+                const formattedData = data.map(item => ({
+                    id: item.show.id,
+                    title: item.show.name,
+                    poster: item.show.image ? item.show.image.medium : 'https://via.placeholder.com/210x295?text=No+Image',
+                    rating: item.show.rating.average || "N/A",
+                    summary: item.show.summary || "No description available.",
+                    language: item.show.language,
+                    genres: item.show.genres.join(", ")
+                }));
+
+                renderResults(formattedData);
             },
             error: function() {
-                // Si sale este error, es que la API de Google está saturada o la URL está mal
-                $("#main-container").html("<p style='text-align:center;'>API Error. Please try again later.</p>");
+                alert("Error connecting to the Movie API");
             }
         });
     }
 
-    function renderItems(items) {
+    // 2. RENDERIZADO CON MUSTACHE
+    function renderResults(movies) {
         const template = $('#movie-card-template').html();
-        const viewData = {
-            items: items.map(item => ({
-                id: item.id,
-                title: item.volumeInfo.title,
-                poster: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/150x200?text=No+Image',
-                rating: item.volumeInfo.averageRating || "N/A"
-            }))
-        };
-        const rendered = Mustache.render(template, viewData);
+        const rendered = Mustache.render(template, { items: movies });
         $('#main-container').html(rendered);
     }
 
-    function updatePaginationDisplay() {
-        const pageNumber = Math.floor(currentPage / itemsPerPage) + 1;
-        $('#page-info').text(`Page ${pageNumber}`);
-    }
-
-    // Eventos de botones
-    $('#btn-popular').click(function() {
-        currentQuery = "subject:cinema";
-        currentPage = 0;
-        fetchData(currentQuery, 0);
-    });
-
-    $('#btn-search-view').click(function() {
-        $('#search-bar').toggle();
-    });
-
+    // 3. BUSCADOR
     $('#btn-do-search').click(function() {
-        const q = $('#query').val();
-        if (q) {
-            currentQuery = q;
-            currentPage = 0;
-            fetchData(currentQuery, 0);
-        }
+        const query = $('#query').val();
+        if (query) fetchMovies(query);
     });
 
-    $('#next-page').click(function() {
-        currentPage += itemsPerPage;
-        fetchData(currentQuery, currentPage);
+    // 4. COLECCIÓN POPULAR (AJAX con otra búsqueda)
+    $('#btn-popular').click(function() {
+        fetchMovies('Top Rated'); // Simulamos populares con una búsqueda fija
     });
 
-    $('#prev-page').click(function() {
-        if (currentPage >= itemsPerPage) {
-            currentPage -= itemsPerPage;
-            fetchData(currentQuery, currentPage);
-        }
-    });
-
-    // Cambios de vista
+    // 5. CAMBIO DE VISTA (GRID/LIST)
     $('#grid-mode').click(function() {
         $('#main-container').removeClass('list-view').addClass('grid-view');
     });
@@ -90,23 +59,30 @@ $(document).ready(function() {
         $('#main-container').removeClass('grid-view').addClass('list-view');
     });
 
-    // Detalles
+    // 6. DETALLES ON DEMAND (AJAX para un solo ítem)
     $(document).on('click', '.movie-card', function() {
         const id = $(this).data('id');
-        $.get(`https://www.googleapis.com/books/v1/volumes/${id}`, function(data) {
-            const template = $('#detail-template').html();
-            const detailData = {
-                title: data.volumeInfo.title,
-                poster: data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : '',
-                description: data.volumeInfo.description || "No description available.",
-                rating: data.volumeInfo.averageRating || "N/A",
-                language: (data.volumeInfo.language || "EN").toUpperCase()
-            };
-            const rendered = Mustache.render(template, detailData);
-            $('#details-content').html(rendered);
-            $('#details-panel').fadeIn();
+        
+        $.ajax({
+            url: `https://api.tvmaze.com/shows/${id}`,
+            method: 'GET',
+            success: function(show) {
+                const template = $('#detail-template').html();
+                const detailData = {
+                    title: show.name,
+                    poster: show.image ? show.image.original : '',
+                    description: show.summary, // TVMaze ya trae el HTML
+                    rating: show.rating.average || "N/A",
+                    language: show.language
+                };
+                const rendered = Mustache.render(template, detailData);
+                $('#details-content').html(rendered);
+                $('#details-panel').fadeIn();
+            }
         });
     });
 
-    $('#close-details').click(function() { $('#details-panel').fadeOut(); });
+    $('#close-details').click(function() {
+        $('#details-panel').fadeOut();
+    });
 });
