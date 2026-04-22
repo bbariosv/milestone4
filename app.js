@@ -3,9 +3,9 @@ $(document).ready(function() {
     let currentPage = 1;
     let currentQuery = "star wars";
     let currentTarget = "#search-results";
-    const API_KEY = "TU_API_KEY"; // ⚠️ PON TU KEY
+    const API_KEY = "3671d14c"; 
 
-    // INICIO
+    
     fetchMovies(currentQuery, currentTarget);
 
     function fetchMovies(query, target) {
@@ -40,7 +40,7 @@ $(document).ready(function() {
         });
     }
 
-    // NAV
+    
     $('#btn-search-view').click(function() {
         $('#search-section').show();
         $('#collection-section').hide();
@@ -69,7 +69,7 @@ $(document).ready(function() {
         fetchMovies(currentQuery, currentTarget);
     });
 
-    // SEARCH
+    
     $('#btn-do-search').click(function() {
         const q = $('#query').val();
 
@@ -84,7 +84,7 @@ $(document).ready(function() {
         }
     });
 
-    // GRID / LIST
+    
     $('#grid-mode').click(function() {
         $(currentTarget).removeClass('list-view').addClass('grid-view');
     });
@@ -93,7 +93,7 @@ $(document).ready(function() {
         $(currentTarget).removeClass('grid-view').addClass('list-view');
     });
 
-    // DETAILS
+   
     $(document).on('click', '.movie-card', function() {
 
         const id = $(this).data('id');
@@ -126,7 +126,7 @@ $(document).ready(function() {
         $('#details-panel').hide();
     });
 
-    // PAGINATION
+    
     $('#next-page').click(function() {
         currentPage++;
         $('#page-info').text(`Page ${currentPage}`);
