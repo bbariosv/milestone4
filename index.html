@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie SPA - Milestone 4</title>
+    <title>Movie SPA - TMDB Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <h1>Movie & TV Media Center</h1>
+    <h1>Media Center SPA</h1>
     <nav>
         <button id="btn-search-view">Search Engine</button>
         <button id="btn-popular">Popular Items</button>
-        <button id="btn-bookshelf">My Collection</button>
+        <button id="btn-bookshelf">Trending</button>
     </nav>
 </header>
 
 <main id="app">
-    <div class="controls" style="text-align:center; margin:20px;">
+    <div class="controls">
         <button id="grid-mode">Grid View</button>
         <button id="list-mode">List View</button>
     </div>
 
     <section id="search-section">
-        <div id="search-bar" style="text-align: center; margin: 20px;">
-            <input type="text" id="query" placeholder="Search for movies..." />
+        <div id="search-bar">
+            <input type="text" id="query" placeholder="Search movies (e.g. Batman)..." />
             <button id="btn-do-search">Search</button>
         </div>
         <div id="search-results" class="grid-view">
-            <p style="text-align:center;">Results will appear here...</p>
+            <p style="text-align:center;">Use the bar above to find movies.</p>
         </div>
     </section>
 
@@ -38,37 +38,42 @@
         <div id="collection-results" class="grid-view"></div>
     </section>
 
-    <div class="pagination-container" style="text-align:center; margin: 20px;">
+    <div class="pagination-container">
         <button id="prev-page">Previous</button>
         <span id="page-info">Page 1</span>
         <button id="next-page">Next</button>
     </div>
 
-    <div id="details-panel" style="display:none; background:#333; color: white; margin:20px; padding:20px; border-radius: 10px;">
-        <button id="close-details" style="float:right;">Close ✖</button>
+    <div id="details-panel" style="display:none;">
+        <button id="close-details">Close ✖</button>
         <div id="details-content"></div>
     </div>
 </main>
 
 <script id="movie-card-template" type="x-tmpl-mustache">
 {{#items}}
-<div class="movie-card" data-id="{{id}}" style="border: 1px solid #ccc; padding: 10px; cursor: pointer;">
-    <img src="{{poster}}" alt="{{title}}" style="width: 100%;">
-    <h3>{{title}}</h3>
-    <p>Year: {{year}}</p>
+<div class="movie-card" data-id="{{id}}">
+    <img src="{{poster}}" alt="{{title}}">
+    <div class="card-text">
+        <h3>{{title}}</h3>
+        <p>Year: {{year}} | ⭐ {{rating}}</p>
+    </div>
 </div>
 {{/items}}
 </script>
 
 <script id="detail-template" type="x-tmpl-mustache">
-<div class="detail-display" style="display: flex; gap: 20px; align-items: start;">
-    <img src="{{poster}}" style="width:250px; border-radius: 8px;">
-    <div>
-        <h2>{{title}} ({{year}})</h2>
-        <p><strong>Plot:</strong> {{description}}</p>
-        <p><strong>Language:</strong> {{language}}</p>
-        <p><strong>IMDB Rating:</strong> ⭐ {{rating}}</p>
-        <p><strong>Actors:</strong> {{actors}}</p>
+<div class="detail-display">
+    <img src="{{poster}}" class="detail-poster">
+    <div class="detail-text">
+        <h2>{{title}}</h2>
+        <p><strong>Release Date:</strong> {{year}}</p>
+        <p><strong>Overview:</strong> {{description}}</p>
+        <div class="extra-metadata">
+            <p><strong>Original Language:</strong> {{language}}</p>
+            <p><strong>Popularity:</strong> {{popularity}}</p>
+            <p><strong>Rating:</strong> ⭐ {{rating}}</p>
+        </div>
     </div>
 </div>
 </script>
