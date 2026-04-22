@@ -1,86 +1,134 @@
 $(document).ready(function() {
+
     let currentPage = 1;
-    let currentQuery = "Star Wars";
+    let currentQuery = "star wars";
     let currentTarget = "#search-results";
+    const API_KEY = "3671d14c"; 
 
+    // ============================
     // 1. CARGA INICIAL
-    fetchMovies(currentQuery, "#search-results");
+    // ============================
+    fetchMovies(currentQuery, currentTarget);
 
+    // ============================
+    // 2. FETCH MOVIES (AJAX)
+    // ============================
     function fetchMovies(query, target) {
-        $(target).html("<p style='text-align:center;'>Loading data...</p>");
-        
+
+        $(target).html("<p style='text-align:center;'>Loading...</p>");
+
         $.ajax({
-            url: `https://api.tvmaze.com/search/shows?q=${query}`,
+            url: `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}&page=${currentPage}`,
             method: 'GET',
+
             success: function(data) {
-                const formatted = data.map(item => ({
-                    id: item.show.id,
-                    title: item.show.name,
-                    poster: item.show.image ? item.show.image.medium : 'https://via.placeholder.com/210x295?text=No+Image',
-                    rating: item.show.rating.average || "N/A"
+
+                // Si no hay resultados
+                if (!data.Search) {
+                    $(target).html("<p>No results found</p>");
+                    return;
+                }
+
+                const formatted = data.Search.map(item => ({
+                    id: item.imdbID,
+                    title: item.Title,
+                    poster: item.Poster !== "N/A"
+                        ? item.Poster
+                        : 'https://via.placeholder.com/210x295?text=No+Image',
+                    rating: "N/A"
                 }));
 
                 const template = $('#movie-card-template').html();
-                const rendered = Mustache.render(template, { items: formatted });
+                const rendered = Mustache.render(template, { movies: formatted });
+
                 $(target).html(rendered);
             },
+
             error: function() {
-                $(target).html("<p style='text-align:center;'>Error loading data. Try again.</p>");
+                $(target).html("<p>Error loading data</p>");
             }
         });
     }
 
-    // 2. NAVEGACIÓN ENTRE SECCIONES (Punto 7)
+    // ============================
+    // 3. NAVEGACIÓN
+    // ============================
+
     $('#btn-search-view').click(function() {
-        $('#collection-section').hide();
-        $('#search-section').fadeIn();
+        $('#collection-results').hide();
+        $('#search-results').show();
+        $('#search-bar').show();
         currentTarget = "#search-results";
     });
 
-    $('#btn-popular, #btn-bookshelf').click(function() {
-        $('#search-section').hide();
-        $('#collection-section').fadeIn();
+    $('#btn-popular').click(function() {
+        $('#search-results').hide();
+        $('#collection-results').show();
+        $('#search-bar').hide();
+
         currentTarget = "#collection-results";
-        // Cargamos la colección solo si está vacía o se pulsa el botón
-        fetchMovies("Top Rated", "#collection-results");
+        currentQuery = "avengers"; // simulamos "popular"
+        currentPage = 1;
+
+        fetchMovies(currentQuery, currentTarget);
     });
 
-    // 3. BUSCADOR
+    // ============================
+    // 4. BUSCADOR
+    // ============================
+
     $('#btn-do-search').click(function() {
         const q = $('#query').val();
+
         if (q) {
             currentQuery = q;
             currentPage = 1;
-            $('#page-info').text(`Page ${currentPage}`);
-            fetchMovies(q, "#search-results");
+
+            $('#search-results').show();
+            $('#collection-results').hide();
+
+            fetchMovies(currentQuery, "#search-results");
         }
     });
 
-    // 4. VISTAS GRID / LIST
+    // ============================
+    // 5. GRID / LIST
+    // ============================
+
     $('#grid-mode').click(function() {
-        $('#search-results, #collection-results').removeClass('list-view').addClass('grid-view');
+        $(currentTarget).removeClass('list-view').addClass('grid-view');
     });
 
     $('#list-mode').click(function() {
-        $('#search-results, #collection-results').removeClass('grid-view').addClass('list-view');
+        $(currentTarget).removeClass('grid-view').addClass('list-view');
     });
 
-    // 5. DETALLES (SPA Behavior)
+    // ============================
+    // 6. DETALLES (OMDb)
+    // ============================
+
     $(document).on('click', '.movie-card', function() {
+
         const id = $(this).data('id');
+
         $.ajax({
-            url: `https://api.tvmaze.com/shows/${id}`,
+            url: `https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`,
             method: 'GET',
-            success: function(show) {
+
+            success: function(movie) {
+
                 const template = $('#detail-template').html();
+
                 const detailData = {
-                    title: show.name,
-                    poster: show.image ? show.image.medium : '',
-                    description: show.summary,
-                    rating: show.rating.average || "N/A",
-                    language: show.language
+                    title: movie.Title,
+                    poster: movie.Poster !== "N/A" ? movie.Poster : '',
+                    description: movie.Plot,
+                    rating: movie.imdbRating,
+                    language: movie.Language
                 };
+
                 const rendered = Mustache.render(template, detailData);
+
                 $('#details-content').html(rendered);
                 $('#details-panel').fadeIn();
             }
@@ -91,7 +139,10 @@ $(document).ready(function() {
         $('#details-panel').fadeOut();
     });
 
-    // 6. PAGINACIÓN (Simulada para cumplir el requisito)
+    // ============================
+    // 7. PAGINACIÓN
+    // ============================
+
     $('#next-page').click(function() {
         currentPage++;
         $('#page-info').text(`Page ${currentPage}`);
@@ -105,4 +156,5 @@ $(document).ready(function() {
             fetchMovies(currentQuery, currentTarget);
         }
     });
+
 });
