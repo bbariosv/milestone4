@@ -12,76 +12,64 @@
     <h1>Movie & TV Media Center</h1>
     <nav>
         <button id="btn-search-view">Search Engine</button>
-        <button id="btn-popular">Top-Rated Items</button>
+        <button id="btn-popular">Popular Items</button>
         <button id="btn-bookshelf">My Collection</button>
     </nav>
 </header>
 
-<hr>
-
 <main id="app">
-
     <div class="controls" style="text-align:center; margin:20px;">
         <button id="grid-mode">Grid View</button>
         <button id="list-mode">List View</button>
     </div>
 
-    <!-- SEARCH -->
     <section id="search-section">
-
         <div id="search-bar" style="text-align: center; margin: 20px;">
             <input type="text" id="query" placeholder="Search for movies..." />
             <button id="btn-do-search">Search</button>
         </div>
-
         <div id="search-results" class="grid-view">
             <p style="text-align:center;">Results will appear here...</p>
         </div>
-
     </section>
 
-    <!-- COLLECTION -->
     <section id="collection-section" style="display:none;">
-        <h2 style="text-align:center;">Collection & Top-Rated</h2>
+        <h2 id="collection-title" style="text-align:center;">Collection</h2>
         <div id="collection-results" class="grid-view"></div>
     </section>
 
-    <hr>
-
-    <!-- PAGINATION -->
-    <div class="pagination-container" style="text-align:center;">
+    <div class="pagination-container" style="text-align:center; margin: 20px;">
         <button id="prev-page">Previous</button>
         <span id="page-info">Page 1</span>
         <button id="next-page">Next</button>
     </div>
 
-    <!-- DETAILS -->
-    <div id="details-panel" style="display:none; background:#333; margin:20px; padding:20px;">
-        <button id="close-details">Close ✖</button>
+    <div id="details-panel" style="display:none; background:#333; color: white; margin:20px; padding:20px; border-radius: 10px;">
+        <button id="close-details" style="float:right;">Close ✖</button>
         <div id="details-content"></div>
     </div>
-
 </main>
 
-<!-- TEMPLATE CARDS -->
 <script id="movie-card-template" type="x-tmpl-mustache">
 {{#items}}
-<div class="movie-card" data-id="{{id}}">
-    <img src="{{poster}}">
+<div class="movie-card" data-id="{{id}}" style="border: 1px solid #ccc; padding: 10px; cursor: pointer;">
+    <img src="{{poster}}" alt="{{title}}" style="width: 100%;">
     <h3>{{title}}</h3>
-    <p>Rating: {{rating}}</p>
+    <p>Year: {{year}}</p>
 </div>
 {{/items}}
 </script>
 
-<!-- TEMPLATE DETAILS -->
 <script id="detail-template" type="x-tmpl-mustache">
-<div>
-    <img src="{{poster}}" style="width:200px;">
-    <h2>{{title}}</h2>
-    <p>{{{description}}}</p>
-    <p><strong>Language:</strong> {{language}}</p>
-    <p><strong>Rating:</strong> {{rating}}</p>
+<div class="detail-display" style="display: flex; gap: 20px; align-items: start;">
+    <img src="{{poster}}" style="width:250px; border-radius: 8px;">
+    <div>
+        <h2>{{title}} ({{year}})</h2>
+        <p><strong>Plot:</strong> {{description}}</p>
+        <p><strong>Language:</strong> {{language}}</p>
+        <p><strong>IMDB Rating:</strong> ⭐ {{rating}}</p>
+        <p><strong>Actors:</strong> {{actors}}</p>
+    </div>
 </div>
 </script>
 
